@@ -7,9 +7,23 @@ function debounce(fn, delay, immediate) {
       isFlag = true;
     }
     clearTimeout(timer);
-    timer = setTimeout(() => {
+    time = setTimeout(() => {
       fn.apply(this, args);
       isFlag = true;
     }, delay);
   };
 }
+
+// let timer;
+// let isFlag = false;
+// return function (...args) {
+//   if (immediate && !isFlag) {
+//     fn.apply(this, args);
+//     isFlag = true;
+//   }
+//   clearTimeout(timer);
+//   timer = setTimeout(() => {
+//     fn.apply(this, args);
+//     isFlag = true;
+//   }, delay);
+// };

@@ -1,14 +1,15 @@
 function Currying(fn) {
-  function curried(...args) {
-    if (args.length >= fn.length) {
+  return function curried(...args) {
+    console.log("args", args.length);
+    console.log(fn.length);
+    if (args.length > fn.length) {
       fn.apply(this, args);
     } else {
-      return function (...arg2) {
-        return curried.apply(this, [...args, ...arg2]);
+      return function (...args2) {
+        return curried.apply(this, [...args, ...args2]);
       };
     }
-  }
-  return curried;
+  };
 }
 
 const add = Currying((num1, num2, num3) => {

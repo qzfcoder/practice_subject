@@ -8,9 +8,8 @@ function myFlat(arr) {
   arr.forEach((item) => {
     if (Array.isArray(item)) {
       result.push(...myFlat(item));
-    } else {
-      result.push(item);
     }
+    result.push(item);
   });
   return result;
 }

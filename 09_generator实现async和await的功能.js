@@ -1,5 +1,5 @@
-function test(fn) {
-  const generator = fn();
+function test(gnFn) {
+  const generator = gnFn();
   function exec(res) {
     const result = generator.next(res);
     if (result.done) {
@@ -11,6 +11,20 @@ function test(fn) {
   }
   exec();
 }
+
+// function test(fn) {
+//   let generator = fn();
+//   function exec(res) {
+//     const result = generator.next(res);
+//     if (result.done) {
+//       return result.value;
+//     }
+//     result.value.then((res) => {
+//       exec(res);
+//     });
+//   }
+//   exec();
+// }
 
 // 请求函数
 function requestData(url) {
@@ -25,6 +39,7 @@ function* getData() {
   let res = yield requestData("a");
   let res2 = yield requestData(res + "b");
   let res3 = yield requestData(res2 + "c");
+  console.log(res3);
   return res3;
 }
-test(getData);
+console.log(test(getData));
