@@ -1,4 +1,4 @@
-import { defineComponent, computed, inject } from "vue";
+import { defineComponent, computed, inject, onMounted, ref } from "vue";
 import "./editor.scss";
 export default defineComponent({
   props: {
@@ -13,12 +13,22 @@ export default defineComponent({
       zIndex: `${props.block.zIndex}`,
     }));
     const config = inject("config");
+    const blockRef = ref();
+    onMounted(() => {
+      // console.log(blockRef.value);
+      let { offsetWidth, offsetHeight } = blockRef.value;
+      if (props.block.alignCenter) {
+        props.block.left = props.block.left - offsetWidth / 2;
+        props.block.height = props.block.left - offsetHeight / 2;
+        props.block.alignCenter = false;
+      }
+    });
     // console.log(config, "12");
     return () => {
       const component = config.componentMap[props.block.key];
       const RenderComponent = component.render(); // 获取render函数
       return (
-        <div class="editor-block" style={blockStyles.value}>
+        <div class="editor-block" ref={blockRef} style={blockStyles.value}>
           {RenderComponent}
         </div>
       );

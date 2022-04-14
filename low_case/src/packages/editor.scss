@@ -28,17 +28,17 @@
       min-height: 100px;
       position: relative;
 
-      >span {
+      > span {
         position: absolute;
         top: 0;
         left: 0;
         background: blue;
         color: #fff;
-        padding: 4px
+        padding: 4px;
       }
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
@@ -82,4 +82,19 @@
 
 .editor-block {
   position: absolute;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    opacity: 0.2;
+  }
+}
+.editor-block-focus {
+  &::after {
+    border: 1px dashed red;
+  }
 }

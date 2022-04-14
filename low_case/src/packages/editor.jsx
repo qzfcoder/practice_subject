@@ -2,6 +2,10 @@ import { defineComponent, computed, inject, ref } from "vue";
 import "./editor.scss";
 import EditorBlock from "./editorBlock.jsx";
 import deepcopy from "deepcopy";
+import { useMenuDragger } from "./useMenuDragger";
+import { useFocus } from "./useFocus";
+import { useBlockDrag } from "./useBlockDrag";
+
 export default defineComponent({
   props: {
     modelValue: {
@@ -27,45 +31,20 @@ export default defineComponent({
     }));
     const config = inject("config");
     const containerRef = ref();
-    let currentComponent = null;
-    const dragenter = (e) => {
-      e.dataTransfer.drapEffect = "move";
-    };
-    const dragover = (e) => {
-      e.preventDefault();
-    };
-    const dragleave = (e) => {
-      e.dataTransfer.drapEffect = "none";
-    };
-    const drop = (e) => {
-      let blocks = data.value.blocks;
-      data.value = {
-        ...data.value,
-        blocks: [
-          ...blocks,
-          {
-            top: e.offsetY,
-            left: e.offsetX,
-            key: currentComponent.key,
-            zIndex: 1,
-          },
-        ],
-      };
-      currentComponent = null;
-    };
-    const dragstart = (e, component) => {
-      currentComponent = component;
+    // 实现菜单拖拽功能
+    const { dragstart, dragend } = useMenuDragger(containerRef, data);
 
-      // dragenter进入元素
-      // dragover在目标元素中，阻止默认行为，佛则不能触发drop
-      // dragleave离开元素的时候，需要增加禁用表示
-      // drop松手的时候添加元素
-      containerRef.value.addEventListener("dragenter", dragenter);
-      containerRef.value.addEventListener("dragover", dragover);
-      containerRef.value.addEventListener("dragleave", dragleave);
-      containerRef.value.addEventListener("drop", drop);
-      // e.dataTransfer.dropEffect = "mnove";
-    };
+    // 实现获取元素焦点
+    let { focusData, blockMousedown, containerMousedown } = useFocus(
+      data,
+      (e) => {
+        console.log(focusData.value.focus);
+        mousedown(e);
+      }
+    );
+
+    // 实现多选拖拽
+    let { mousedown } = useBlockDrag(focusData);
     return () => (
       <div class="editor">
         <div class="editor-left">
@@ -76,6 +55,7 @@ export default defineComponent({
                 class="editor-left-item"
                 draggable
                 onDragstart={(e) => dragstart(e, component)}
+                onDragend={(e) => dragend(e, component)}
               >
                 <span>{component.label}</span>
                 <div>{component.preview()}</div>
@@ -93,10 +73,15 @@ export default defineComponent({
               class="editor-container-canvas_content"
               style={containerStyles.value}
               ref={containerRef}
+              onMousedown={containerMousedown}
             >
               内容区域
               {data.value.blocks.map((block) => (
-                <EditorBlock block={block}></EditorBlock>
+                <EditorBlock
+                  class={block.focus ? "editor-block-focus" : ""}
+                  onMousedown={(e) => blockMousedown(e, block)}
+                  block={block}
+                ></EditorBlock>
               ))}
             </div>
           </div>
