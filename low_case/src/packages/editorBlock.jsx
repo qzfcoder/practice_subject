@@ -13,7 +13,7 @@ export default defineComponent({
       zIndex: `${props.block.zIndex}`,
     }));
     const config = inject("config");
-    console.log(config, "12");
+    // console.log(config, "12");
     return () => {
       const component = config.componentMap[props.block.key];
       const RenderComponent = component.render(); // 获取render函数

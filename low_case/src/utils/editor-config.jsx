@@ -2,14 +2,14 @@
 // key对应的组件的映射关系
 
 function createEditorConfig() {
-  const componetList = [];
+  const componentList = [];
   const componentMap = {};
 
   return {
-    componetList,
+    componentList,
     componentMap,
     register: (component) => {
-      componetList.push(component);
+      componentList.push(component);
       componentMap[component.key] = component;
     },
   };
