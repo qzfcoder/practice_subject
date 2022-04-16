@@ -1,4 +1,4 @@
-import { events } from "./event";
+import { events } from "./events";
 
 export function useMenuDragger(containerRef, data) {
   let currentComponent = null;

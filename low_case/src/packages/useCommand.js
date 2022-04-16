@@ -1,6 +1,6 @@
 import deepcopy from "deepcopy";
 import { onUnmounted } from "vue";
-import { events } from "./event";
+import { events } from "./events";
 
 export function useCommand(data) {
   const state = {
