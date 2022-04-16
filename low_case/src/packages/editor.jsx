@@ -5,6 +5,7 @@ import deepcopy from "deepcopy";
 import { useMenuDragger } from "./useMenuDragger";
 import { useFocus } from "./useFocus";
 import { useBlockDrag } from "./useBlockDrag";
+import { useCommand } from "./useCommand";
 
 export default defineComponent({
   props: {
@@ -35,16 +36,32 @@ export default defineComponent({
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
 
     // 实现获取元素焦点
-    let { focusData, blockMousedown, containerMousedown } = useFocus(
-      data,
-      (e) => {
+    let { focusData, blockMousedown, containerMousedown, lastSelectBlock } =
+      useFocus(data, (e) => {
         console.log(focusData.value.focus);
         mousedown(e);
-      }
-    );
+      });
 
     // 实现多选拖拽
-    let { mousedown } = useBlockDrag(focusData);
+    let { mousedown, markLine } = useBlockDrag(
+      focusData,
+      lastSelectBlock,
+      data
+    );
+    const { commands } = useCommand(data);
+    const button = [
+      {
+        label: "撤销",
+        icon: "icon-back",
+        handler: () => commands.redo(),
+      },
+      {
+        label: "重做",
+        icon: "icon-forward",
+        handler: () => commands.undo(),
+      },
+    ];
+
     return () => (
       <div class="editor">
         <div class="editor-left">
@@ -63,7 +80,16 @@ export default defineComponent({
             );
           })}
         </div>
-        <div class="editor-top">菜单栏</div>
+        <div class="editor-top">
+          {button.map((btn, index) => {
+            return (
+              <div class="editor-top-button" onClick={btn.handler}>
+                <i class={btn.icon}></i>
+                <span class={btn.label}></span>
+              </div>
+            );
+          })}
+        </div>
         <div class="editor-right">属性菜单栏</div>
         <div class="editor-container">
           {/* 产生滚动条 */}
@@ -76,13 +102,19 @@ export default defineComponent({
               onMousedown={containerMousedown}
             >
               内容区域
-              {data.value.blocks.map((block) => (
+              {data.value.blocks.map((block, index) => (
                 <EditorBlock
                   class={block.focus ? "editor-block-focus" : ""}
-                  onMousedown={(e) => blockMousedown(e, block)}
+                  onMousedown={(e) => blockMousedown(e, block, index)}
                   block={block}
                 ></EditorBlock>
               ))}
+              {markLine.x !== null && (
+                <div class="line-x" style={{ left: markLine.x + "px" }}></div>
+              )}
+              {markLine.y !== null && (
+                <div class="line-y" style={{ top: markLine.y + "px" }}></div>
+              )}
             </div>
           </div>
         </div>

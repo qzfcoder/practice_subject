@@ -19,9 +19,11 @@ export default defineComponent({
       let { offsetWidth, offsetHeight } = blockRef.value;
       if (props.block.alignCenter) {
         props.block.left = props.block.left - offsetWidth / 2;
-        props.block.height = props.block.left - offsetHeight / 2;
+        props.block.top = props.block.left - offsetHeight / 2;
         props.block.alignCenter = false;
       }
+      props.block.width = offsetWidth;
+      props.block.height = offsetHeight;
     });
     // console.log(config, "12");
     return () => {

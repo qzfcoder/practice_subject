@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "element-plus": "^2.1.9"
+    "element-plus": "^2.1.9",
+    "mitt": "^3.0.0"
   },
   "devDependencies": {
     "unplugin-auto-import": "^0.7.1",
